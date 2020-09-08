@@ -69,6 +69,12 @@
 #ifdef USE_SIDEBAR
 #include "sidebar/lib.h"
 #endif
+#ifdef USE_COMP_MBOX
+#include "compmbox/lib.h"
+#endif
+#ifdef USE_IMAP
+#include "imap/lib.h"
+#endif
 
 /* Initial string that starts completion. No telling how much the user has
  * typed so far. Allocate 1024 just to be sure! */
@@ -703,6 +709,7 @@ void mutt_opts_free(void)
   mutt_keys_free();
 
   mutt_regexlist_free(&NoSpamList);
+  commands_free();
 }
 
 /**
@@ -741,6 +748,13 @@ int mutt_init(struct ConfigSet *cs, bool skip_sys_rc, struct ListHead *commands)
 
   mutt_grouplist_init();
   alias_init();
+  commands_init();
+#ifdef USE_COMP_MBOX
+  mutt_comp_init();
+#endif
+#ifdef USE_IMAP
+  imap_init();
+#endif
   TagTransforms = mutt_hash_new(64, MUTT_HASH_STRCASECMP);
   TagFormats = mutt_hash_new(64, MUTT_HASH_NO_FLAGS);
 

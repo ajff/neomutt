@@ -47,22 +47,17 @@
 #endif
 
 // clang-format off
-const struct Command Commands[] = {
+
+const struct Command mutt_commands[] = {
   { "account-hook",        mutt_parse_hook,        MUTT_ACCOUNT_HOOK },
   { "alias",               parse_alias,            0 },
   { "alternates",          parse_alternates,       0 },
   { "alternative_order",   parse_stailq,           IP &AlternativeOrderList },
-#ifdef USE_COMP_MBOX
-  { "append-hook",         mutt_parse_hook,        MUTT_APPEND_HOOK },
-#endif
   { "attachments",         parse_attachments,      0 },
   { "auto_view",           parse_stailq,           IP &AutoViewList },
   { "bind",                mutt_parse_bind,        0 },
   { "cd",                  parse_cd,               0 },
   { "charset-hook",        mutt_parse_hook,        MUTT_CHARSET_HOOK },
-#ifdef USE_COMP_MBOX
-  { "close-hook",          mutt_parse_hook,        MUTT_CLOSE_HOOK },
-#endif
 #ifdef HAVE_COLOR
   { "color",               mutt_parse_color,       0 },
 #endif
@@ -95,9 +90,6 @@ const struct Command Commands[] = {
   { "my_hdr",              parse_my_hdr,           0 },
   { "named-mailboxes",     parse_mailboxes,        MUTT_NAMED },
   { "nospam",              parse_spam_list,        MUTT_NOSPAM },
-#ifdef USE_COMP_MBOX
-  { "open-hook",           mutt_parse_hook,        MUTT_OPEN_HOOK },
-#endif
   { "pgp-hook",            mutt_parse_hook,        MUTT_CRYPT_HOOK },
   { "push",                mutt_parse_push,        0 },
   { "reply-hook",          mutt_parse_hook,        MUTT_REPLY_HOOK },
@@ -109,17 +101,11 @@ const struct Command Commands[] = {
   { "set",                 parse_set,              MUTT_SET_SET },
   { "setenv",              parse_setenv,           MUTT_SET_SET },
   { "shutdown-hook",       mutt_parse_hook,        MUTT_SHUTDOWN_HOOK | MUTT_GLOBAL_HOOK },
-#ifdef USE_SIDEBAR
-  { "sidebar_whitelist",   sb_parse_whitelist,     0 },
-#endif
   { "source",              parse_source,           0 },
   { "spam",                parse_spam_list,        MUTT_SPAM },
   { "startup-hook",        mutt_parse_hook,        MUTT_STARTUP_HOOK | MUTT_GLOBAL_HOOK },
   { "subjectrx",           parse_subjectrx_list,   0 },
   { "subscribe",           parse_subscribe,        0 },
-#ifdef USE_IMAP
-  { "subscribe-to",        parse_subscribe_to,     0 },
-#endif
   { "tag-formats",         parse_tag_formats,      0 },
   { "tag-transforms",      parse_tag_transforms,   0 },
   { "timeout-hook",        mutt_parse_hook,        MUTT_TIMEOUT_HOOK | MUTT_GLOBAL_HOOK },
@@ -147,18 +133,58 @@ const struct Command Commands[] = {
   { "unscore",             mutt_parse_unscore,     0 },
   { "unset",               parse_set,              MUTT_SET_UNSET },
   { "unsetenv",            parse_setenv,           MUTT_SET_UNSET },
-#ifdef USE_SIDEBAR
-  { "unsidebar_whitelist", sb_parse_unwhitelist,   0 },
-#endif
   { "unsubjectrx",         parse_unsubjectrx_list, 0 },
   { "unsubscribe",         parse_unsubscribe,      0 },
-#ifdef USE_IMAP
-  { "unsubscribe-from",    parse_unsubscribe_from, 0 },
-#endif
 #ifdef USE_NOTMUCH
   { "unvirtual-mailboxes", parse_unmailboxes,      0 },
   { "virtual-mailboxes",   parse_mailboxes,        MUTT_NAMED },
 #endif
-  { NULL,                  NULL,                   0 },
 };
+
 // clang-format on
+
+ARRAY_HEAD(CommandsData, struct Command);
+struct CommandsData commands = ARRAY_HEAD_INITIALIZER;
+const struct Command *Commands;
+
+/**
+ * commands_init - Initialize Commands array and register default commands
+ */
+void commands_init(void)
+{
+  ARRAY_RESERVE(&commands, 100);
+  Commands = commands.entries;
+
+  COMMANDS_REGISTER(mutt_commands);
+}
+
+/**
+ * commands_cmp - Compare two commands by name
+ */
+int commands_cmp(const void *a, const void *b)
+{
+  struct Command x = *(const struct Command *) a;
+  struct Command y = *(const struct Command *) b;
+
+  return strcmp(x.name, y.name);
+}
+
+/**
+ * commands_register - Add commands to Commands array
+ */
+void commands_register(const struct Command *cmdv, const size_t cmds)
+{
+  for (int i = 0; i < cmds; i++)
+  {
+    ARRAY_ADD(&commands, cmdv[i]);
+  }
+  ARRAY_SORT(&commands, commands_cmp);
+}
+
+/**
+ * commands_free - Free Commands array
+ */
+void commands_free(void)
+{
+  ARRAY_FREE(&commands);
+}

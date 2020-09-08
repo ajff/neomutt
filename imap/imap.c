@@ -47,6 +47,7 @@
 #include "bcache/lib.h"
 #include "pattern/lib.h"
 #include "auth.h"
+#include "command_parse.h"
 #include "commands.h"
 #include "hook.h"
 #include "init.h"
@@ -64,6 +65,23 @@
 #endif
 
 struct stat;
+
+// clang-format off
+
+const struct Command imap_commands[] = {
+  { "subscribe-to",        parse_subscribe_to,     0 },
+  { "unsubscribe-from",    parse_unsubscribe_from, 0 },
+};
+
+// clang-format on
+
+/**
+ * imap_init - Setup feature commands
+ */
+void imap_init(void)
+{
+  COMMANDS_REGISTER(imap_commands);
+}
 
 /**
  * check_capabilities - Make sure we can log in to this server
