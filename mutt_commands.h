@@ -74,8 +74,8 @@ enum MuttSetCommand
 #define MUTT_NAMED   (1 << 0)
 
 /* command registry functions */
-#define COMMANDS_REGISTER(cmds) commands_register(cmds, sizeof(cmds) / sizeof(cmds[0]))
-extern const struct Command *Commands;
+#define COMMANDS_REGISTER(cmds) commands_register(cmds, mutt_array_size(cmds))
+const struct Command *Commands;
 void commands_init(void);
 void commands_register(const struct Command *cmdv, const size_t cmds);
 void commands_free(void);
