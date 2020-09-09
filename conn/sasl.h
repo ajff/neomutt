@@ -29,6 +29,8 @@
 
 struct Connection;
 
+bool sasl_auth_validator(const char* authenticator);
+
 int  mutt_sasl_client_new(struct Connection *conn, sasl_conn_t **saslconn);
 void mutt_sasl_done      (void);
 int  mutt_sasl_interact  (sasl_interact_t *interaction);

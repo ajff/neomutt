@@ -49,6 +49,7 @@
 #include "sendlib.h"
 #include "sendmail.h"
 #include "smtp.h"
+#include "conn/lib.h"
 // IWYU pragma: end_exports
 
 #endif /* MUTT_SEND_LIB_H */

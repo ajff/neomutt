@@ -45,6 +45,7 @@
 #include <sys/types.h>
 #include <time.h>
 #include "core/lib.h"
+#include "conn/lib.h"
 #include "format_flags.h"
 #include "mx.h"
 

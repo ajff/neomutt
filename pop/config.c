@@ -61,9 +61,18 @@ static int pop_auth_validator(const struct ConfigSet *cs, const struct ConfigDef
   {
     if (!pop_auth_is_valid(np->data))
     {
+#ifdef USE_SASL
+      if (!sasl_auth_validator(np->data))
+      {
+        mutt_buffer_printf(err, _("Option %s: %s invalid sasl authenticator"),
+                           cdef->name, np->data);
+        return CSR_ERR_INVALID;
+      }
+#else
       mutt_buffer_printf(err, _("Option %s: %s is not a valid authenticator"),
                          cdef->name, np->data);
       return CSR_ERR_INVALID;
+#endif
     }
   }
 

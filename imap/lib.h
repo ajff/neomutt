@@ -55,6 +55,7 @@
 #include <stddef.h>
 #include <stdbool.h>
 #include <sys/types.h>
+#include "conn/lib.h"
 #include "core/lib.h"
 #include "mx.h"
 
