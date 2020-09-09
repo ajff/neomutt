@@ -59,6 +59,9 @@
 #include "keymap.h"
 #include "mutt_commands.h"
 #include "mutt_globals.h"
+#ifdef USE_LUA
+#include "mutt_lua.h"
+#endif
 #include "mutt_menu.h"
 #include "mutt_parse.h"
 #include "muttlib.h"
@@ -755,12 +758,18 @@ int mutt_init(struct ConfigSet *cs, bool skip_sys_rc, struct ListHead *commands)
 #ifdef USE_IMAP
   imap_init();
 #endif
+#ifdef USE_LUA
+  mutt_lua_init();
+#endif
   TagTransforms = mutt_hash_new(64, MUTT_HASH_STRCASECMP);
   TagFormats = mutt_hash_new(64, MUTT_HASH_NO_FLAGS);
 
   mutt_menu_init();
 #ifdef USE_SIDEBAR
   sb_init();
+#endif
+#ifdef USE_NOTMUCH
+  nm_init();
 #endif
 
   snprintf(AttachmentMarker, sizeof(AttachmentMarker), "\033]9;%" PRIu64 "\a", // Escape

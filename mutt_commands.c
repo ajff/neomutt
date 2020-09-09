@@ -76,10 +76,6 @@ const struct Command mutt_commands[] = {
   { "ignore",              parse_ignore,           0 },
   { "index-format-hook",   mutt_parse_idxfmt_hook, 0 },
   { "lists",               parse_lists,            0 },
-#ifdef USE_LUA
-  { "lua",                 mutt_lua_parse,         0 },
-  { "lua-source",          mutt_lua_source_file,   0 },
-#endif
   { "macro",               mutt_parse_macro,       0 },
   { "mailboxes",           parse_mailboxes,        0 },
   { "mailto_allow",        parse_stailq,           IP &MailToAllow },
@@ -135,10 +131,6 @@ const struct Command mutt_commands[] = {
   { "unsetenv",            parse_setenv,           MUTT_SET_UNSET },
   { "unsubjectrx",         parse_unsubjectrx_list, 0 },
   { "unsubscribe",         parse_unsubscribe,      0 },
-#ifdef USE_NOTMUCH
-  { "unvirtual-mailboxes", parse_unmailboxes,      0 },
-  { "virtual-mailboxes",   parse_mailboxes,        MUTT_NAMED },
-#endif
 };
 
 // clang-format on
